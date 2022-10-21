@@ -1,0 +1,48 @@
+package monitormanagement
+
+import (
+	"context"
+	"database/sql"
+	"fmt"
+	"os"
+
+	"github.com/google/uuid"
+	"github.com/uptrace/bun"
+	"github.com/uptrace/bun/dialect/pgdialect"
+	"github.com/uptrace/bun/driver/pgdriver"
+)
+
+var Db *bun.DB
+
+type Window struct {
+	ID       uuid.UUID `bun:"type:uuid,default:uuid_generate_v4()"`
+	WindowId int
+	Title    string
+	X        int
+	Y        int
+	Width    int
+	Height   int
+	Depth    int
+}
+
+func InitDatabase() {
+	fmt.Println("Initializing database...")
+	ConnectToDatabase()
+	CreateWindowTable()
+}
+
+func ConnectToDatabase() {
+	fmt.Println("Connecting to database...")
+	sqldb := sql.OpenDB(pgdriver.NewConnector(pgdriver.WithDSN(os.Getenv("DATABASE_URL"))))
+	Db = bun.NewDB(sqldb, pgdialect.New())
+}
+
+func CreateWindowTable() {
+	fmt.Println("Creating window table...")
+	ctx := context.Background()
+	_, err := Db.NewCreateTable().Model((*Window)(nil)).IfNotExists().Exec(ctx)
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println("Window table created successfully!")
+}
