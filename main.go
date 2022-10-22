@@ -7,7 +7,8 @@ import (
 	"os"
 	"strings"
 
-	monitormanagement "monitormanagement/database"
+	database "monitormanagement/database"
+	exec "monitormanagement/exec"
 
 	"github.com/joho/godotenv"
 )
@@ -18,7 +19,9 @@ func main() {
 	fmt.Println("Monitor Management V3. Made with <3 by Simon Schwedes in Go")
 	LoadEnv()
 	LoadBlacklist()
-	monitormanagement.InitDatabase()
+	database.InitDatabase()
+	windows := exec.GetAllWindows()
+	fmt.Println(windows)
 }
 
 func LoadEnv() {

@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"fmt"
 	"os"
+	"time"
 
 	"github.com/google/uuid"
 	"github.com/uptrace/bun"
@@ -15,14 +16,15 @@ import (
 var Db *bun.DB
 
 type Window struct {
-	ID       uuid.UUID `bun:"type:uuid,default:uuid_generate_v4()"`
-	WindowId int
-	Title    string
-	X        int
-	Y        int
-	Width    int
-	Height   int
-	Depth    int
+	ID        uuid.UUID `bun:"type:uuid,default:uuid_generate_v4()"`
+	WindowId  int
+	Title     string
+	X         int
+	Y         int
+	Width     int
+	Height    int
+	Depth     int
+	CreatedAt time.Time `bun:",nullzero,notnull,default:current_timestamp"`
 }
 
 func InitDatabase() {
