@@ -1,4 +1,4 @@
-package monitormanagement
+package shell
 
 import (
 	"fmt"
@@ -8,7 +8,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/lordsalmon/monitormanagement/blacklist"
+	blacklist "github.com/lordsalmon/monitormanagement/blacklist"
 	database "github.com/lordsalmon/monitormanagement/database"
 )
 
