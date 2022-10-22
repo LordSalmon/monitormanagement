@@ -1,4 +1,4 @@
-package monitormanagement
+package database
 
 import (
 	"context"

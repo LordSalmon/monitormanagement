@@ -2,12 +2,14 @@ package monitormanagement
 
 import (
 	"fmt"
-	database "monitormanagement/database"
 	"os"
 	"os/exec"
 	"runtime"
 	"strconv"
 	"strings"
+
+	"github.com/lordsalmon/monitormanagement/blacklist"
+	database "github.com/lordsalmon/monitormanagement/database"
 )
 
 func GetAllWindows() []database.Window {
@@ -38,6 +40,7 @@ func getLinuxWindows() []database.Window {
 	}
 
 	var windows []database.Window = []database.Window{}
+	lines = filterLinesByBlacklist(lines)
 	for _, line := range lines {
 		var window database.Window = database.Window{}
 		windowId, err := strconv.Atoi(strings.Split(line, " ")[0])
@@ -58,4 +61,23 @@ func getMacWindows() []database.Window {
 func remove(s []string, i int) []string {
 	s[i] = s[len(s)-1]
 	return s[:len(s)-1]
+}
+
+func filterLinesByBlacklist(lines []string) []string {
+	var out []string = []string{}
+	for _, line := range lines {
+		if !isBlacklisted(line) {
+			out = append(out, line)
+		}
+	}
+	return out
+}
+
+func isBlacklisted(line string) bool {
+	for _, blacklistEntry := range blacklist.Blacklist {
+		if strings.Contains(line, blacklistEntry) {
+			return true
+		}
+	}
+	return false
 }

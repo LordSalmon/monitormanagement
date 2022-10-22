@@ -2,23 +2,22 @@ package main
 
 import (
 	"fmt"
-	"io/ioutil"
-	"net/http"
 	"os"
-	"strings"
 
-	database "monitormanagement/database"
 	exec "monitormanagement/exec"
+
+	blacklist "github.com/lordsalmon/monitormanagement/blacklist"
+	database "github.com/lordsalmon/monitormanagement/database"
 
 	"github.com/joho/godotenv"
 )
 
-var blacklist = []string{}
+var Blacklist = []string{}
 
 func main() {
 	fmt.Println("Monitor Management V3. Made with <3 by Simon Schwedes in Go")
 	LoadEnv()
-	LoadBlacklist()
+	blacklist.LoadBlacklist()
 	database.InitDatabase()
 	windows := exec.GetAllWindows()
 	fmt.Println(windows)
@@ -33,24 +32,4 @@ func LoadEnv() {
 	} else {
 		fmt.Println("Environment variables loaded successfully!")
 	}
-}
-
-func LoadBlacklist() {
-	fmt.Println("Loading blacklist...")
-	requestURL := os.Getenv("BLACKLIST_URL")
-	res, err := http.Get(requestURL)
-	if err != nil {
-		panic(err)
-	}
-	resBody, err := ioutil.ReadAll(res.Body)
-	if err != nil {
-		panic(err)
-	}
-	for _, line := range strings.Split(string(resBody), "\n") {
-		if len(line) > 0 {
-			blacklist = append(blacklist, line)
-		}
-	}
-	fmt.Println("Blacklist loaded successfully!")
-	fmt.Println("Blacklist:", blacklist)
 }

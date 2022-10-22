@@ -1,4 +1,4 @@
-module monitormanagement
+module github.com/lordsalmon/monitormanagement
 
 go 1.19
 
