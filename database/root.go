@@ -46,3 +46,11 @@ func CreateWindowTable() {
 	}
 	fmt.Println("Window table created successfully!")
 }
+
+func InsertWindow(window Window) {
+	ctx := context.Background()
+	_, err := Db.NewInsert().Model(&window).Exec(ctx)
+	if err != nil {
+		panic(err)
+	}
+}
