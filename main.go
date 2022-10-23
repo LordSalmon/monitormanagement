@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"fmt"
 
 	"github.com/lordsalmon/monitormanagement/blacklist"
@@ -17,5 +18,8 @@ func main() {
 	blacklist.LoadBlacklist()
 	database.InitDatabase()
 	windows := shell.GetAllWindows()
-	fmt.Println(windows)
+	for _, window := range windows {
+		ctx := context.Background()
+		database.Db.NewInsert().Model(&window).Exec(ctx)
+	}
 }

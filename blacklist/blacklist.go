@@ -27,5 +27,4 @@ func LoadBlacklist() {
 		}
 	}
 	fmt.Println("Blacklist loaded successfully!")
-	fmt.Println("Blacklist:", Blacklist)
 }

@@ -19,6 +19,7 @@ type Window struct {
 	ID        uuid.UUID `bun:"type:uuid,default:uuid_generate_v4()"`
 	WindowId  int
 	Title     string
+	Program   string
 	X         int
 	Y         int
 	Width     int
@@ -37,6 +38,7 @@ func ConnectToDatabase() {
 	fmt.Println("Connecting to database...")
 	sqldb := sql.OpenDB(pgdriver.NewConnector(pgdriver.WithDSN(os.Getenv("DATABASE_URL"))))
 	Db = bun.NewDB(sqldb, pgdialect.New())
+	fmt.Println("Connected to database successfully!")
 }
 
 func CreateWindowTable() {

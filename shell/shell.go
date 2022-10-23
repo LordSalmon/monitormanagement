@@ -23,32 +23,32 @@ func GetAllWindows() []database.Window {
 }
 
 func getLinuxWindows() []database.Window {
-	cmd := exec.Command("xwininfo", "-root", "-tree", "|", "grep 0x")
+	fmt.Println("Getting windows...")
+	cmd := exec.Command("bash", "-c", "xwininfo -root -tree | grep 0x")
 	stdout, err := cmd.Output()
 	if err != nil {
 		panic(err)
 	}
 
 	var lines []string = strings.Split(string(stdout), "\n")
-	// remove first three lines as they are boilerplate
-	lines = remove(lines, 0)
-	lines = remove(lines, 0)
-	lines = remove(lines, 0)
-	for index, line := range lines {
-		lines[index] = strings.ReplaceAll(lines[index], "'", "")
-		lines[index] = strings.TrimSpace(line)
-	}
-
-	var windows []database.Window = []database.Window{}
+	lines = trimLines(lines)
 	lines = filterLinesByBlacklist(lines)
+	lines = filterEmptyLines(lines)
+	var windows []database.Window = []database.Window{}
 	for _, line := range lines {
 		var window database.Window = database.Window{}
-		windowId, err := strconv.Atoi(strings.Split(line, " ")[0])
+		windowId, err := strconv.ParseInt(strings.Split(line, " ")[0], 0, 64)
 		if err != nil {
 			fmt.Println("Error parsing window id:", err)
 			os.Exit(1)
 		}
-		window.WindowId = windowId
+		// boilerplate line: 0x8a00008 "Discord": ("Discord" "Discord")  16x16+0+0  +0+0
+		window.WindowId = int(windowId)
+		program := strings.Split(line, "(\"")[1]
+		program = strings.Split(program, "\")")[0]
+		program = strings.Split(program, "\"")[2]
+		window.Program = program
+		window = InjectWindowInformation(window)
 		windows = append(windows, window)
 	}
 	return windows
@@ -56,11 +56,6 @@ func getLinuxWindows() []database.Window {
 
 func getMacWindows() []database.Window {
 	return []database.Window{}
-}
-
-func remove(s []string, i int) []string {
-	s[i] = s[len(s)-1]
-	return s[:len(s)-1]
 }
 
 func filterLinesByBlacklist(lines []string) []string {
