@@ -1,17 +1,18 @@
 package blacklist
 
 import (
-	"fmt"
 	"io/ioutil"
 	"net/http"
 	"os"
 	"strings"
+
+	log "github.com/sirupsen/logrus"
 )
 
 var Blacklist []string
 
 func LoadBlacklist() {
-	fmt.Println("Loading blacklist...")
+	log.Info("Loading blacklist...")
 	requestURL := os.Getenv("BLACKLIST_URL")
 	res, err := http.Get(requestURL)
 	if err != nil {
@@ -26,5 +27,5 @@ func LoadBlacklist() {
 			Blacklist = append(Blacklist, line)
 		}
 	}
-	fmt.Println("Blacklist loaded successfully!")
+	log.Info("Blacklist loaded successfully!")
 }

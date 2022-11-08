@@ -1,7 +1,6 @@
 package shell
 
 import (
-	"fmt"
 	"os"
 	"os/exec"
 	"runtime"
@@ -10,6 +9,7 @@ import (
 
 	blacklist "github.com/lordsalmon/monitormanagement/blacklist"
 	database "github.com/lordsalmon/monitormanagement/database"
+	log "github.com/sirupsen/logrus"
 )
 
 func GetAllWindows() []database.Window {
@@ -23,7 +23,7 @@ func GetAllWindows() []database.Window {
 }
 
 func getLinuxWindows() []database.Window {
-	fmt.Println("Getting windows...")
+	log.Info("Getting windows...")
 	cmd := exec.Command("bash", "-c", "xwininfo -root -tree | grep 0x")
 	stdout, err := cmd.Output()
 	if err != nil {
@@ -39,7 +39,7 @@ func getLinuxWindows() []database.Window {
 		var window database.Window = database.Window{}
 		windowId, err := strconv.ParseInt(strings.Split(line, " ")[0], 0, 64)
 		if err != nil {
-			fmt.Println("Error parsing window id:", err)
+			log.Error("Error parsing window id:", err)
 			os.Exit(1)
 		}
 		// boilerplate line: 0x8a00008 "Discord": ("Discord" "Discord")  16x16+0+0  +0+0

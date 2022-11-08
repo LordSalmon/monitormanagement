@@ -9,3 +9,5 @@ A small tool for Linux (used on Ubuntu) to track focus, position, size, title et
 <br>
 
 ## Installation
+
+TODO: .env file location

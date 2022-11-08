@@ -3,11 +3,11 @@ package database
 import (
 	"context"
 	"database/sql"
-	"fmt"
 	"os"
 	"time"
 
 	"github.com/google/uuid"
+	log "github.com/sirupsen/logrus"
 	"github.com/uptrace/bun"
 	"github.com/uptrace/bun/dialect/pgdialect"
 	"github.com/uptrace/bun/driver/pgdriver"
@@ -29,26 +29,26 @@ type Window struct {
 }
 
 func InitDatabase() {
-	fmt.Println("Initializing database...")
+	log.Info("Initializing database...")
 	ConnectToDatabase()
 	CreateWindowTable()
 }
 
 func ConnectToDatabase() {
-	fmt.Println("Connecting to database...")
+	log.Info("Connecting to database...")
 	sqldb := sql.OpenDB(pgdriver.NewConnector(pgdriver.WithDSN(os.Getenv("DATABASE_URL"))))
 	Db = bun.NewDB(sqldb, pgdialect.New())
-	fmt.Println("Connected to database successfully!")
+	log.Info("Connected to database successfully!")
 }
 
 func CreateWindowTable() {
-	fmt.Println("Creating window table...")
+	log.Info("Creating window table...")
 	ctx := context.Background()
 	_, err := Db.NewCreateTable().Model((*Window)(nil)).IfNotExists().Exec(ctx)
 	if err != nil {
 		panic(err)
 	}
-	fmt.Println("Window table created successfully!")
+	log.Info("Window table created successfully!")
 }
 
 func InsertWindow(window Window) {

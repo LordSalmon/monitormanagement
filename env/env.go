@@ -1,19 +1,19 @@
 package env
 
 import (
-	"fmt"
 	"os"
 
 	"github.com/joho/godotenv"
+	log "github.com/sirupsen/logrus"
 )
 
 func LoadEnv() {
-	fmt.Println("Loading environment variables...")
+	log.Info("Loading environment variables...")
 	err := godotenv.Load()
 	if err != nil {
-		fmt.Println("Error loading .env file", err)
+		log.Error("Error loading .env file", err)
 		os.Exit(1)
 	} else {
-		fmt.Println("Environment variables loaded successfully!")
+		log.Info("Environment variables loaded successfully!")
 	}
 }
